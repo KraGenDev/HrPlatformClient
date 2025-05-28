@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HrPlatformClient.LoginPage"
+             Title="Login">
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0" Spacing="20">
+
+            <Label Text="Base Address" />
+            <Entry x:Name="BaseAddressEntry"
+                   Placeholder="http://host.docker.internal:8081"
+                   Keyboard="Url" />
+
+            <Label Text="Username" />
+            <Entry x:Name="UsernameEntry"
+                   Placeholder="Your username"
+                   Keyboard="Default" />
+
+            <Label Text="Password" />
+            <Entry x:Name="PasswordEntry"
+                   Placeholder="Your password"
+                   IsPassword="True" />
+
+            <Button
+                x:Name="LoginBtn"
+                Text="Get Token"
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Fill" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

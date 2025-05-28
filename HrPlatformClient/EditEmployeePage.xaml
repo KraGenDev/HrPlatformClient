@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HrPlatformClient.EditEmployeePage"
+             Title="Редагування працівника">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Ім'я" />
+            <Entry Text="{Binding Employee.FirstName}" />
+
+            <Label Text="Прізвище" />
+            <Entry Text="{Binding Employee.LastName}" />
+
+            <Label Text="Email" />
+            <Entry Text="{Binding Employee.Email}" Keyboard="Email" />
+
+            <Label Text="Телефон" />
+            <Entry Text="{Binding Employee.Phone}" Keyboard="Telephone" />
+
+            <Label Text="Посада" />
+            <Picker x:Name="PositionPicker"
+        ItemsSource="{Binding Positions}"
+        SelectedItem="{Binding SelectedPosition, Mode=TwoWay}" />
+
+            <Label Text="Відділ" />
+            <Picker x:Name="DepartmentPicker"
+        ItemsSource="{Binding Departments}"
+        SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" />
+
+
+
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,30,0,0">
+                <Button Text="Зберегти" Command="{Binding SaveCommand}" />
+                <Button Text="Скасувати" Command="{Binding CancelCommand}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
