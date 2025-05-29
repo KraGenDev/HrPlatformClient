@@ -1,4 +1,5 @@
 ﻿using HrPlatformClient.DTO;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -33,6 +34,85 @@ namespace HrPlatformClient.Services
         public async Task ReloadAsync()
         {
             await LoadDepartmentsAsync();
+        }
+
+        public async Task CreateDepartmentAsync(string departmentName)
+        {
+            if (string.IsNullOrWhiteSpace(departmentName))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Назва відділу не може бути порожньою", "OK");
+                return;
+            }
+            if (DepartmentNames.Contains(departmentName, StringComparer.OrdinalIgnoreCase))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Відділ з такою назвою вже існує", "OK");
+                return;
+            }
+
+            var department = new
+            {
+                name = departmentName
+            };
+
+            try
+            {
+                var response = await _http.PostAsync("api/departments/new", department);
+                var json = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    DepartmentNames.Add(departmentName);
+
+                    var data = JsonConvert.DeserializeObject<DepartmentDTO>(json);
+                    if (data != null)
+                    {
+                        _departmentsDTOs.Add(data);
+                    }
+                    else
+                    {
+                        throw new Exception("Не вдалося отримати дані про новий відділ");
+                    }
+
+                    OnPropertyChanged(nameof(DepartmentNames));
+                    Application.Current.MainPage.DisplayAlert("Успіх", "Відділ успішно створено", "OK");
+                }
+                else
+                {
+                    Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося створити відділ", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+            }
+        }
+
+        public async void Remove(string departmentName)
+        {
+            var id = GetDepartmentIdByName(departmentName);
+
+            try
+            {
+                bool success = await _http.DeleteAsync($"api/departments/dellete/{id}");
+                if (success)
+                {
+                    var pos = _departmentsDTOs.FirstOrDefault(p => p.Name.Equals(departmentName, StringComparison.OrdinalIgnoreCase));
+                    if (pos != null)
+                    {
+                        _departmentsDTOs.Remove(pos);
+                        DepartmentNames.Remove(departmentName);
+                        OnPropertyChanged(nameof(DepartmentNames));
+                    }
+                    await Application.Current.MainPage.DisplayAlert("Видалено", "Відділ успішно видалено", "OK");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося видалити Відділ", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+            }
         }
 
 

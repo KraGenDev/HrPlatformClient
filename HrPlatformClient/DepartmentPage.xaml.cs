@@ -3,14 +3,14 @@ using HrPlatformClient.ViewModels;
 
 namespace HrPlatformClient;
 
-public partial class PositionPage : ContentPage
+public partial class DepartmentPage : ContentPage
 {
-    private readonly PositionsViewModel _viewModel;
+    private readonly DepartmentViewModel _viewModel;
 
-    public PositionPage(PositionsService positionsService)
+    public DepartmentPage(DepartmentsService departmentService)
     {
         InitializeComponent();
-        _viewModel = new PositionsViewModel(positionsService);
+        _viewModel = new DepartmentViewModel(departmentService);
         BindingContext = _viewModel;
     }
 

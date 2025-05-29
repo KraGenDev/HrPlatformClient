@@ -7,18 +7,23 @@
     Title="HrPlatformClient">
 
     <ShellContent
-        Title="Login"
+        Title="Авторизація"
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
 
     <ShellContent
-        Title="Employees"
+        Title="Працівники"
         ContentTemplate="{DataTemplate local:EmployeesPage}"
         Route="EmployeesPage" />
 
     <ShellContent
-        Title="Positions"
+        Title="Посади"
         ContentTemplate="{DataTemplate local:PositionPage}"
         Route="PositionPage" />
+
+    <ShellContent
+        Title="Відділи"
+        ContentTemplate="{DataTemplate local:DepartmentPage}"
+        Route="DepartmentPage" />
 
 </Shell>

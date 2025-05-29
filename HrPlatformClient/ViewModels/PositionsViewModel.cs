@@ -1,5 +1,4 @@
-﻿using HrPlatformClient.DTO;
-using HrPlatformClient.Services;
+﻿using HrPlatformClient.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -9,7 +8,6 @@ namespace HrPlatformClient.ViewModels
 {
     public class PositionsViewModel : INotifyPropertyChanged
     {
-        private readonly HttpRequestsController _http;
         private readonly PositionsService _positionsService;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -30,9 +28,8 @@ namespace HrPlatformClient.ViewModels
         public ICommand DeletePosition { get; }
         public ICommand CreatePosition { get; }
 
-        public PositionsViewModel(HttpRequestsController http,PositionsService positionsService)
+        public PositionsViewModel(PositionsService positionsService)
         {
-            _http = http;
             _positionsService = positionsService;
 
             DeletePosition = new Command<string>(OnDeletePosition);
