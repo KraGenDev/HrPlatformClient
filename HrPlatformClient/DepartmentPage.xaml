@@ -5,47 +5,42 @@
              x:Name="RootPage">
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
-      VerticalOptions="Center"
-      Padding="0,10,0,0"
-      RowDefinitions="Auto">
-
-            <!-- Колонка 0: Заголовок -->
+        <!-- Заголовок + кнопка -->
+        <Grid ColumnDefinitions="*,Auto"
+              VerticalOptions="Center"
+              Padding="0,10,0,0"
+              RowDefinitions="Auto">
             <Label Grid.Column="0"
-           Text="Список відділів"
-           FontSize="24"
-           VerticalOptions="Center"
-           HorizontalOptions="Start" />
+                   Text="Список відділів"
+                   FontSize="24"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start" />
 
-            <!-- Колонка 1: заповнювач (щоб відтиснути вправо) -->
-            <BoxView Grid.Column="1"
-             WidthRequest="1"
-             HorizontalOptions="FillAndExpand"/>
-
-
-            <Label Grid.Column="2"
-               Text="Додати відділ"
-               FontSize="24"
-               VerticalOptions="Center"
-               HorizontalOptions="End" 
-                   Margin="0,0,10,0"/>
-            
-            <Entry Grid.Column="3"
-               Text="{Binding NewDepartmentName}"
-               Placeholder="Назва"
-               WidthRequest="180"
-               VerticalOptions="Center"
-               HorizontalOptions="End" />
-            <Button Grid.Column="4"
-                Text="Додати"
-                Command="{Binding CreateDepartment}"
-                VerticalOptions="Center"
-                Margin="10,0,0,0"
-                HorizontalOptions="End" 
-                BackgroundColor="LimeGreen"/>
+            <Button Grid.Column="1"
+                    Text="{Binding AddDepartmentButtonText}"
+                    Command="{Binding ToggleAddDepartmentMode}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="End"
+                    BackgroundColor="{Binding AddDepartmentButtonColor}"
+                    TextColor="White" />
         </Grid>
 
-        <!-- Список посад -->
+        <!-- Поле вводу + Зберегти -->
+        <StackLayout IsVisible="{Binding IsAddingDepartment}"
+                     Orientation="Horizontal"
+                     HorizontalOptions="FillAndExpand"
+                     Spacing="10">
+            <Entry Text="{Binding NewDepartmentName}"
+                   Placeholder="Назва"
+                   HorizontalOptions="FillAndExpand" />
+
+            <Button Text="Зберегти"
+                    Command="{Binding CreateDepartment}"
+                    BackgroundColor="LimeGreen"
+                    TextColor="White" />
+        </StackLayout>
+
+        <!-- Список відділів -->
         <CollectionView ItemsSource="{Binding Departments}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -69,7 +64,7 @@
                                     TextColor="White"
                                     VerticalOptions="Center"
                                     Margin="10,0,0,0"
-                                    Padding="8,4"/>
+                                    Padding="8,4" />
                         </Grid>
                     </Frame>
                 </DataTemplate>

@@ -14,6 +14,29 @@ namespace HrPlatformClient.ViewModels
 
         public ObservableCollection<string> Positions => _positionsService.PositionNames;
 
+        public ICommand DeletePosition { get; }
+        public ICommand CreatePosition { get; }
+        public ICommand ToggleAddMode { get; }
+
+
+        public Color AddButtonColor => IsAddingPosition ? Color.FromArgb("#E57373") : Colors.LimeGreen;
+
+        private bool _isAddingPosition;
+        public bool IsAddingPosition
+        {
+            get => _isAddingPosition;
+            set
+            {
+                _isAddingPosition = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AddButtonText));
+                OnPropertyChanged(nameof(AddButtonColor));
+            }
+        }
+
+
+        public string AddButtonText => IsAddingPosition ? "Скасувати" : "Додати";
+
         private string _newPositionName;
         public string NewPositionName
         {
@@ -25,20 +48,29 @@ namespace HrPlatformClient.ViewModels
             }
         }
 
-        public ICommand DeletePosition { get; }
-        public ICommand CreatePosition { get; }
-
         public PositionsViewModel(PositionsService positionsService)
         {
             _positionsService = positionsService;
 
             DeletePosition = new Command<string>(OnDeletePosition);
             CreatePosition = new Command(OnCreatePosition);
+            ToggleAddMode = new Command(() =>
+            {
+                IsAddingPosition = !IsAddingPosition;
+                NewPositionName = string.Empty;
+            });
+
+            NewPositionName = string.Empty;
         }
 
-        private async void OnCreatePosition(object obj)
+        private async void OnCreatePosition()
         {
+            if (string.IsNullOrWhiteSpace(NewPositionName))
+                return;
+
             await _positionsService.CreatePositionAsynk(NewPositionName);
+            NewPositionName = string.Empty;
+            IsAddingPosition = false;
         }
 
         private async void OnDeletePosition(string name)
@@ -54,12 +86,9 @@ namespace HrPlatformClient.ViewModels
             _positionsService.Remove(name);
         }
 
-        public async Task InitAsync()
-        {
-            await _positionsService.InitAsync();
-        }
+        public async Task InitAsync() => await _positionsService.InitAsync();
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -25,6 +25,24 @@ namespace HrPlatformClient.ViewModels
             }
         }
 
+        private bool _isAddingDepartment;
+        public bool IsAddingDepartment
+        {
+            get => _isAddingDepartment;
+            set
+            {
+                _isAddingDepartment = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(AddDepartmentButtonText));
+                OnPropertyChanged(nameof(AddDepartmentButtonColor));
+            }
+        }
+
+        public string AddDepartmentButtonText => IsAddingDepartment ? "Скасувати" : "Додати";
+        public Color AddDepartmentButtonColor => IsAddingDepartment ? Color.FromArgb("#E57373") : Colors.LimeGreen;
+
+        public ICommand ToggleAddDepartmentMode { get; }
+
         public ICommand DeleteDepartment { get; }
         public ICommand CreateDepartment { get; }
 
@@ -34,11 +52,23 @@ namespace HrPlatformClient.ViewModels
 
             DeleteDepartment = new Command<string>(OnDeleteDepartment);
             CreateDepartment = new Command(OnCreateDepartment);
+            ToggleAddDepartmentMode = new Command(() =>
+            {
+                IsAddingDepartment = !IsAddingDepartment;
+                NewDepartmentName = string.Empty;
+            });
+
+            NewDepartmentName = string.Empty;
         }
 
-        private async void OnCreateDepartment(object obj)
+        private async void OnCreateDepartment()
         {
+            if (string.IsNullOrWhiteSpace(NewDepartmentName))
+                return;
+
             await _departmentService.CreateDepartmentAsync(NewDepartmentName);
+            NewDepartmentName = string.Empty;
+            IsAddingDepartment = false;
         }
 
         private async void OnDeleteDepartment(string name)
@@ -60,6 +90,6 @@ namespace HrPlatformClient.ViewModels
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

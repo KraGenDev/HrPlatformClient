@@ -7,6 +7,8 @@ public partial class LoginPage : ContentPage
 {
     private readonly HttpRequestsController _http;
 
+    private bool _isBusy = false;
+
     public LoginPage(HttpRequestsController http)
     {
         InitializeComponent();
@@ -15,22 +17,25 @@ public partial class LoginPage : ContentPage
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        string baseAddress = BaseAddressEntry.Text?.Trim() ?? "";
-        string username = UsernameEntry.Text?.Trim() ?? "";
-        string password = PasswordEntry.Text ?? "";
-
-        if (string.IsNullOrEmpty(baseAddress) ||
-            string.IsNullOrEmpty(username) ||
-            string.IsNullOrEmpty(password))
-        {
-            await DisplayAlert("Validation", "Please fill in all fields", "OK");
-            return;
-        }
-
-        _http.SetBaseAdress(baseAddress);
+        if (_isBusy) return;
+        _isBusy = true;
 
         try
         {
+            string baseAddress = BaseAddressEntry.Text?.Trim() ?? "";
+            string username = UsernameEntry.Text?.Trim() ?? "";
+            string password = PasswordEntry.Text ?? "";
+
+            if (string.IsNullOrEmpty(baseAddress) ||
+                string.IsNullOrEmpty(username) ||
+                string.IsNullOrEmpty(password))
+            {
+                await DisplayAlert("Validation", "Please fill in all fields", "OK");
+                return;
+            }
+
+            _http.SetBaseAddress(baseAddress);
+
             var userObj = new
             {
                 username = username,
@@ -38,14 +43,14 @@ public partial class LoginPage : ContentPage
             };
 
             var response = await _http.PostAsync("/auth/token", userObj);
-            var json = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
-                await DisplayAlert("Error", $"Request failed: {response.StatusCode}\n{json}", "OK");
+                await DisplayAlert("Error", $"Request failed: {response.StatusCode}", "OK");
                 return;
             }
 
+            var json = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<TokenDto>(json);
 
             if (!string.IsNullOrWhiteSpace(data?.AccessToken))
@@ -63,5 +68,10 @@ public partial class LoginPage : ContentPage
         {
             await DisplayAlert("Exception", ex.Message, "OK");
         }
+        finally
+        {
+            _isBusy = false;
+        }
     }
+
 }

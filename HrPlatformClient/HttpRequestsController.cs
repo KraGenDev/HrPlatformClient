@@ -1,24 +1,46 @@
-﻿using System.Text;
+﻿using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace HrPlatformClient
 {
     public class HttpRequestsController
     {
-        private readonly HttpClient _httpClient = new HttpClient();
-
+        private readonly HttpClient _httpClient;
+        private Uri? _baseAddress;
 
         public HttpRequestsController()
         {
             _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://63d4-176-111-185-180.ngrok-free.app/"); 
         }
 
-        public async Task<T?> GetAsync<T>(string url)
+        public void SetBaseAddress(string address)
         {
-            try 
+            if (Uri.TryCreate(address, UriKind.Absolute, out var uri))
             {
-                var response = await _httpClient.GetAsync(url);
+                _baseAddress = uri;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid base address");
+            }
+        }
+
+        private Uri GetFullUri(string relativeUrl)
+        {
+            if (_baseAddress == null)
+                throw new InvalidOperationException("Base address not set. Call SetBaseAddress() first.");
+
+            return new Uri(_baseAddress, relativeUrl);
+        }
+
+        public async Task<T?> GetAsync<T>(string relativeUrl)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(GetFullUri(relativeUrl));
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
@@ -29,70 +51,65 @@ namespace HrPlatformClient
             }
             catch (Exception ex)
             {
-                // TODO: логування
+                // TODO: Логування помилки ex
                 return default;
             }
         }
 
-        public async Task<HttpResponseMessage> PostAsync<T>(string url, T body)
+        public async Task<HttpResponseMessage> PostAsync<T>(string relativeUrl, T body)
         {
             try
             {
                 var json = JsonConvert.SerializeObject(body);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync(url, content);
-
-                return response;
+                return await _httpClient.PostAsync(GetFullUri(relativeUrl), content);
             }
             catch (Exception ex)
             {
-                // TODO: логування або повторна передача помилки
+                // TODO: Логування помилки ex
                 throw;
             }
         }
 
-        public async Task<TResponse?> PutAsync<TRequest, TResponse>(string url, TRequest body)
+        public async Task<TResponse?> PutAsync<TRequest, TResponse>(string relativeUrl, TRequest body)
         {
             try
             {
                 var json = JsonConvert.SerializeObject(body);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PutAsync(url, content);
+                var response = await _httpClient.PutAsync(GetFullUri(relativeUrl), content);
                 if (!response.IsSuccessStatusCode)
                     return default;
 
                 var resultJson = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<TResponse>(resultJson);
             }
-            catch
+            catch (Exception ex)
             {
+                // TODO: Логування помилки ex
                 return default;
             }
         }
 
-        public async Task<bool> DeleteAsync(string url)
+        public async Task<bool> DeleteAsync(string relativeUrl)
         {
             try
             {
-                var response = await _httpClient.DeleteAsync(url);
+                var response = await _httpClient.DeleteAsync(GetFullUri(relativeUrl));
                 return response.IsSuccessStatusCode;
             }
-            catch
+            catch (Exception ex)
             {
+                // TODO: Логування помилки ex
                 return false;
             }
         }
 
         public void SetBearerToken(string token)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-        }
-
-        public void SetBaseAdress(string adress)
-        {
-            _httpClient.BaseAddress = new Uri(adress);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
     }
 }
