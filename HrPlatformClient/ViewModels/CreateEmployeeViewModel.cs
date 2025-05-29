@@ -10,9 +10,8 @@ namespace HrPlatformClient.ViewModels
     public class CreateEmployeeViewModel : INotifyPropertyChanged
     {
         private readonly HttpRequestsController _http;
-
-        private List<DepartmentDTO> departmentDTOs;
-        private PositionsService _positionsService;
+        private readonly PositionsService _positionsService;
+        private readonly DepartmentsService _departmentsService;
 
         public Employee Employee { get; }
 
@@ -49,49 +48,30 @@ namespace HrPlatformClient.ViewModels
             }
         }
 
+        public ObservableCollection<string> Departments => _departmentsService.DepartmentNames;
+        public ObservableCollection<string> Positions => _positionsService.PositionNames;
 
-        public ObservableCollection<string> Departments { get; } = [];
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
-        public event Action DepartmentsLoaded;
-
-
-        public CreateEmployeeViewModel(Employee employee, HttpRequestsController http, PositionsService positionsService)
+        public CreateEmployeeViewModel(Employee employee, HttpRequestsController http, PositionsService positionsService, DepartmentsService departmentsService)
         {
             _http = http;
             Employee = employee;
             _positionsService = positionsService;
+            _departmentsService = departmentsService;
 
             SaveCommand = new Command(async () => await OnSave());
             CancelCommand = new Command(async () => await OnCancel());
-
-            _ = LoadDepartments();
-        }
-
-
-        private async Task LoadDepartments()
-        {
-            departmentDTOs = await _http.GetAsync<List<DepartmentDTO>>("/api/departments/getAll");
-
-            Departments.Clear();
-            foreach (var dep in departmentDTOs)
-            {
-                Departments.Add(dep.Name);
-            }
-
-            DepartmentsLoaded?.Invoke();
-
-            OnPropertyChanged(nameof(Departments));
         }
 
         private async Task OnSave()
         {
-
             var employeeDto = new EmployeeDTO(Employee);
-            employeeDto.Department = departmentDTOs.First(item => item.Name == Employee.Department).Id;
+            employeeDto.Department = _departmentsService.GetDepartmentIdByName(Employee.Department);
             employeeDto.Position = _positionsService.GetPositionIdByName(Employee.Position);
 
-            await _http.PutAsync<EmployeeDTO, EmployeeDTO>($"api/employees/update/{Employee.Id}", employeeDto);
+            await _http.PostAsync<EmployeeDTO>($"api/employees/new", employeeDto);
             await Shell.Current.GoToAsync("..");
         }
 
@@ -101,7 +81,6 @@ namespace HrPlatformClient.ViewModels
             await Shell.Current.GoToAsync("..");
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

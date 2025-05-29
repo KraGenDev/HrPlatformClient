@@ -9,43 +9,69 @@ namespace HrPlatformClient.Services
     public class PositionsService : INotifyPropertyChanged
     {
         private readonly HttpRequestsController _http;
-        public ObservableCollection<string> Positions { get; } = [];
+        private List<PositionDTO> _positionDTOs = [];
 
-        private List<PositionDTO> positionDTOs;
+        public ObservableCollection<string> PositionNames { get; } = [];
 
-        public event Action PositionsLoaded;
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        private bool _isInitialized = false;
 
         public PositionsService(HttpRequestsController http)
         {
             _http = http;
-            positionDTOs = new List<PositionDTO>();
-            LoadPositionsAsync().ConfigureAwait(false);
+        }
+
+        public async Task InitAsync()
+        {
+            if (_isInitialized)
+                return;
+
+            _isInitialized = true;
+            await LoadPositionsAsync();
+        }
+
+        public async Task ReloadAsync()
+        {
+            await LoadPositionsAsync();
+        }
+
+        public void Remove(string positionName)
+        {
+            if (string.IsNullOrEmpty(positionName))
+                return;
+
+            var pos = _positionDTOs.FirstOrDefault(p => p.Name.Equals(positionName, StringComparison.OrdinalIgnoreCase));
+            if (pos != null)
+            {
+                _positionDTOs.Remove(pos);
+                PositionNames.Remove(positionName);
+                OnPropertyChanged(nameof(PositionNames));
+            }
         }
 
         private async Task LoadPositionsAsync()
         {
-            positionDTOs = await _http.GetAsync<List<PositionDTO>>("/api/positions/getAll");
+            _positionDTOs.Clear();
+            _positionDTOs = await _http.GetAsync<List<PositionDTO>>("/api/positions/getAll");
 
-            Positions.Clear();
-            foreach (var pos in positionDTOs)
+            PositionNames.Clear();
+            foreach (var pos in _positionDTOs)
             {
-                Positions.Add(pos.Name);
+                PositionNames.Add(pos.Name);
             }
 
-            PositionsLoaded?.Invoke();
-
-            OnPropertyChanged(nameof(Positions));
+            OnPropertyChanged(nameof(PositionNames));
         }
 
-        public int GetPositionIdByName(string positionName)
+        public int GetPositionIdByName(string name)
         {
-            var position = positionDTOs.FirstOrDefault(p => p.Name.Equals(positionName, StringComparison.OrdinalIgnoreCase));
-            return position?.Id ?? -1; // -1 indicates not found
+            var pos = _positionDTOs.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return pos?.Id ?? -1;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-                => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 }

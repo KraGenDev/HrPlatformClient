@@ -9,9 +9,10 @@ public class EmployeesViewModel : INotifyPropertyChanged
 {
     private readonly HttpRequestsController _http;
 
-    public ObservableCollection<Employee> Employees { get; } = new ObservableCollection<Employee>();
+    public ObservableCollection<Employee> Employees { get; } = [];
 
     public ICommand EditEmployeeCommand { get; }
+    public ICommand CreateEmployeeCommand { get; }
     public ICommand DeleteEmployeeCommand { get; }
 
     public EmployeesViewModel(HttpRequestsController http)
@@ -20,8 +21,13 @@ public class EmployeesViewModel : INotifyPropertyChanged
 
         EditEmployeeCommand = new Command<Employee>(OnEditEmployee);
         DeleteEmployeeCommand = new Command<Employee>(OnDeleteEmployee);
+        CreateEmployeeCommand = new Command(OnCreateEmployee);
 
-        //_ = LoadEmployeesAsync();
+    }
+
+    private async void OnCreateEmployee()
+    {
+        await Shell.Current.GoToAsync($"createEmployeePage");
     }
 
     public async Task LoadEmployeesAsync()

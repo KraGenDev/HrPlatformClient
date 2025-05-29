@@ -28,8 +28,6 @@
         ItemsSource="{Binding Departments}"
         SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}" />
 
-
-
             <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,30,0,0">
                 <Button Text="Зберегти" Command="{Binding SaveCommand}" />
                 <Button Text="Скасувати" Command="{Binding CancelCommand}" />

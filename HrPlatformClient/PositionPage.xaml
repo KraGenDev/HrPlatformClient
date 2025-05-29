@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HrPlatformClient.PositionPage"
+             x:Name="RootPage"
+             Title="PositionPage">
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <HorizontalStackLayout Spacing="15" HorizontalOptions="Start">
+            <Label Text="Список посад" FontSize="24" />
+            <Button Text="Додати" Command="{Binding CreatePosition}" />
+        </HorizontalStackLayout>
+        <CollectionView ItemsSource="{Binding Positions}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,0,0,10"
+                   Padding="8"
+                   BackgroundColor="DarkGray"
+                   CornerRadius="6"
+                   HasShadow="True"
+                   >
+                        <!-- Менша висота -->
+                        <Grid ColumnDefinitions="*,Auto,Auto"
+                      VerticalOptions="Center"
+                      RowDefinitions="Auto"
+                      Padding="0">
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="{Binding}" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
+                            <Button Grid.Column="2" Text="Видалити"
+                            Command="{Binding BindingContext.DeletePosition, Source={x:Reference RootPage}}"
+                            CommandParameter="{Binding}"
+                            BackgroundColor="#E57373"
+                            TextColor="White"
+                            VerticalOptions="Center"
+                            Margin="0,0,10,0"
+                            Padding="8,4"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

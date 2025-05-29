@@ -22,6 +22,7 @@ namespace HrPlatformClient
 
             builder.Services.AddSingleton<HttpRequestsController>();
             builder.Services.AddSingleton<PositionsService>();
+            builder.Services.AddSingleton<DepartmentsService>();
             builder.Services.AddTransient<EditEmployeePage>();
 
             return builder.Build();

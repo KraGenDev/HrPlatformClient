@@ -17,7 +17,4 @@ public partial class EmployeesPage : ContentPage
             await vm.LoadEmployeesAsync();
         }
     }
-
-
-    private void OnAddEmployeeClicked() { }
 } 

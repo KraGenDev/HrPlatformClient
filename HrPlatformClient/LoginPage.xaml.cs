@@ -51,6 +51,7 @@ public partial class LoginPage : ContentPage
             if (!string.IsNullOrWhiteSpace(data?.AccessToken))
             {
                 _http.SetBearerToken(data.AccessToken);
+
                 await Shell.Current.GoToAsync("//EmployeesPage");
             }
             else
