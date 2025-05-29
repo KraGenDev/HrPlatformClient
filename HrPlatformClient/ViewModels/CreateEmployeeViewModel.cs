@@ -1,4 +1,5 @@
 ﻿using HrPlatformClient.DTO;
+using HrPlatformClient.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -6,12 +7,12 @@ using System.Windows.Input;
 
 namespace HrPlatformClient.ViewModels
 {
-    public class EditEmployeeViewModel : INotifyPropertyChanged
+    public class CreateEmployeeViewModel : INotifyPropertyChanged
     {
         private readonly HttpRequestsController _http;
 
-        private List<PositionDTO> positionDTOs;
         private List<DepartmentDTO> departmentDTOs;
+        private PositionsService _positionsService;
 
         public Employee Employee { get; }
 
@@ -51,38 +52,22 @@ namespace HrPlatformClient.ViewModels
 
         public ObservableCollection<string> Departments { get; } = [];
 
-        public ObservableCollection<string> Positions { get; } = [];
 
-        public event Action PositionsLoaded;
         public event Action DepartmentsLoaded;
 
 
-        public EditEmployeeViewModel(Employee employee, HttpRequestsController http)
+        public CreateEmployeeViewModel(Employee employee, HttpRequestsController http, PositionsService positionsService)
         {
             _http = http;
             Employee = employee;
+            _positionsService = positionsService;
 
             SaveCommand = new Command(async () => await OnSave());
             CancelCommand = new Command(async () => await OnCancel());
 
-            _ = LoadPositionsAsync();
             _ = LoadDepartments();
         }
 
-        private async Task LoadPositionsAsync()
-        {
-            positionDTOs = await _http.GetAsync<List<PositionDTO>>("/api/positions/getAll");
-
-            Positions.Clear();
-            foreach (var pos in positionDTOs)
-            {
-                Positions.Add(pos.Name); 
-            }
-
-            PositionsLoaded?.Invoke();
-
-            OnPropertyChanged(nameof(Positions));
-        }
 
         private async Task LoadDepartments()
         {
@@ -104,7 +89,7 @@ namespace HrPlatformClient.ViewModels
 
             var employeeDto = new EmployeeDTO(Employee);
             employeeDto.Department = departmentDTOs.First(item => item.Name == Employee.Department).Id;
-            employeeDto.Position = positionDTOs.First(item => item.Name == Employee.Position).Id;
+            employeeDto.Position = _positionsService.GetPositionIdByName(Employee.Position);
 
             await _http.PutAsync<EmployeeDTO, EmployeeDTO>($"api/employees/update/{Employee.Id}", employeeDto);
             await Shell.Current.GoToAsync("..");
@@ -120,5 +105,4 @@ namespace HrPlatformClient.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HrPlatformClient.Services;
+using Microsoft.Extensions.Logging;
 
 namespace HrPlatformClient
 {
@@ -20,6 +21,7 @@ namespace HrPlatformClient
 #endif
 
             builder.Services.AddSingleton<HttpRequestsController>();
+            builder.Services.AddSingleton<PositionsService>();
             builder.Services.AddTransient<EditEmployeePage>();
 
             return builder.Build();

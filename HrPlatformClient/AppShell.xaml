@@ -16,9 +16,4 @@
         ContentTemplate="{DataTemplate local:EmployeesPage}"
         Route="EmployeesPage" />
 
-    <ShellContent
-        Title="Edit Employee"
-        Route="editEmployeePage"
-        ContentTemplate="{DataTemplate local:EditEmployeePage}" />
-    
 </Shell>

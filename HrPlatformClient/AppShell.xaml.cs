@@ -6,7 +6,6 @@
         {
             InitializeComponent();
             Routing.RegisterRoute("editEmployeePage", typeof(EditEmployeePage));
-
         }
     }
 }
