@@ -2,39 +2,74 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="HrPlatformClient.PositionPage"
-             x:Name="RootPage"
-             Title="PositionPage">
+             x:Name="RootPage">
     <VerticalStackLayout Padding="20" Spacing="15">
-        <HorizontalStackLayout Spacing="15" HorizontalOptions="Start">
-            <Label Text="Список посад" FontSize="24" />
-            <Button Text="Додати" Command="{Binding CreatePosition}" />
-        </HorizontalStackLayout>
+
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+      VerticalOptions="Center"
+      Padding="0,10,0,0"
+      RowDefinitions="Auto">
+
+            <!-- Колонка 0: Заголовок -->
+            <Label Grid.Column="0"
+           Text="Список посад"
+           FontSize="24"
+           VerticalOptions="Center"
+           HorizontalOptions="Start" />
+
+            <!-- Колонка 1: заповнювач (щоб відтиснути вправо) -->
+            <BoxView Grid.Column="1"
+             WidthRequest="1"
+             HorizontalOptions="FillAndExpand"/>
+
+
+            <Label Grid.Column="2"
+               Text="Додати посаду"
+               FontSize="24"
+               VerticalOptions="Center"
+               HorizontalOptions="End" 
+                   Margin="0,0,10,0"/>
+            
+            <Entry Grid.Column="3"
+               Text="{Binding NewPositionName}"
+               Placeholder="Назва"
+               WidthRequest="180"
+               VerticalOptions="Center"
+               HorizontalOptions="End" />
+            <Button Grid.Column="4"
+                Text="Додати"
+                Command="{Binding CreatePosition}"
+                VerticalOptions="Center"
+                Margin="10,0,0,0"
+                HorizontalOptions="End" 
+                BackgroundColor="LimeGreen"/>
+        </Grid>
+
+        <!-- Список посад -->
         <CollectionView ItemsSource="{Binding Positions}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Margin="0,0,0,10"
-                   Padding="8"
-                   BackgroundColor="DarkGray"
-                   CornerRadius="6"
-                   HasShadow="True"
-                   >
-                        <!-- Менша висота -->
-                        <Grid ColumnDefinitions="*,Auto,Auto"
-                      VerticalOptions="Center"
-                      RowDefinitions="Auto"
-                      Padding="0">
-                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
-                                <Label Text="{Binding}" VerticalOptions="Center" />
-                            </HorizontalStackLayout>
+                           Padding="8"
+                           BackgroundColor="DarkGray"
+                           CornerRadius="6"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="*,Auto"
+                              VerticalOptions="Center"
+                              RowDefinitions="Auto"
+                              Padding="0">
 
-                            <Button Grid.Column="2" Text="Видалити"
-                            Command="{Binding BindingContext.DeletePosition, Source={x:Reference RootPage}}"
-                            CommandParameter="{Binding}"
-                            BackgroundColor="#E57373"
-                            TextColor="White"
-                            VerticalOptions="Center"
-                            Margin="0,0,10,0"
-                            Padding="8,4"/>
+                            <Label Text="{Binding}" VerticalOptions="Center" Grid.Column="0" />
+
+                            <Button Grid.Column="1"
+                                    Text="Видалити"
+                                    Command="{Binding BindingContext.DeletePosition, Source={x:Reference RootPage}}"
+                                    CommandParameter="{Binding}"
+                                    BackgroundColor="#E57373"
+                                    TextColor="White"
+                                    VerticalOptions="Center"
+                                    Margin="10,0,0,0"
+                                    Padding="8,4"/>
                         </Grid>
                     </Frame>
                 </DataTemplate>

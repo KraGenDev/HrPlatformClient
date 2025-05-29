@@ -16,6 +16,17 @@ namespace HrPlatformClient.ViewModels
 
         public ObservableCollection<string> Positions => _positionsService.PositionNames;
 
+        private string _newPositionName;
+        public string NewPositionName
+        {
+            get => _newPositionName;
+            set
+            {
+                _newPositionName = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand DeletePosition { get; }
         public ICommand CreatePosition { get; }
 
@@ -28,40 +39,22 @@ namespace HrPlatformClient.ViewModels
             CreatePosition = new Command(OnCreatePosition);
         }
 
-        private void OnCreatePosition(object obj)
+        private async void OnCreatePosition(object obj)
         {
-            throw new NotImplementedException();
+            await _positionsService.CreatePositionAsynk(NewPositionName);
         }
 
-        private async void OnDeletePosition(string obj)
+        private async void OnDeletePosition(string name)
         {
-            var id = _positionsService.GetPositionIdByName(obj);
-
             bool confirm = await Application.Current.MainPage.DisplayAlert(
                 "Підтвердження",
-                $"Ви дійсно хочете видалити посаду {obj}?",
+                $"Ви дійсно хочете видалити посаду {name}?",
                 "Так", "Ні");
 
             if (!confirm)
                 return;
 
-            try
-            {
-                bool success = await _http.DeleteAsync($"api/positions/delete/{id}");
-                if (success)
-                {
-                    _positionsService.Remove(obj);
-                    await Application.Current.MainPage.DisplayAlert("Видалено", "Посаду успішно видалено", "OK");
-                }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося видалити Посаду", "OK");
-                }
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
-            }
+            _positionsService.Remove(name);
         }
 
         public async Task InitAsync()

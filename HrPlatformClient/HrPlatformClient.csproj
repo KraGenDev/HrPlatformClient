@@ -22,6 +22,9 @@
 
 		<!-- Display name -->
 		<ApplicationTitle>HrPlatformClient</ApplicationTitle>
+		
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.hrplatformclient</ApplicationId>

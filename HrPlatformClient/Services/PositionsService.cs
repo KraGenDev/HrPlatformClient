@@ -1,4 +1,5 @@
 ﻿using HrPlatformClient.DTO;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -36,17 +37,82 @@ namespace HrPlatformClient.Services
             await LoadPositionsAsync();
         }
 
-        public void Remove(string positionName)
+        public async Task CreatePositionAsynk(string positionName)
         {
-            if (string.IsNullOrEmpty(positionName))
-                return;
-
-            var pos = _positionDTOs.FirstOrDefault(p => p.Name.Equals(positionName, StringComparison.OrdinalIgnoreCase));
-            if (pos != null)
+            if (string.IsNullOrWhiteSpace(positionName))
             {
-                _positionDTOs.Remove(pos);
-                PositionNames.Remove(positionName);
-                OnPropertyChanged(nameof(PositionNames));
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Назва посади не може бути порожньою", "OK");
+                return;
+            }
+            if (PositionNames.Contains(positionName, StringComparer.OrdinalIgnoreCase))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Посада з такою назвою вже існує", "OK");
+                return;
+            }
+
+            var position = new
+            {
+                name = positionName
+            };
+
+            try
+            {
+                var response = await _http.PostAsync("api/positions/new", position);
+                var json = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+                    PositionNames.Add(positionName);
+
+                    var data = JsonConvert.DeserializeObject<PositionDTO>(json);
+                    if (data != null)
+                    {
+                        _positionDTOs.Add(data);
+                    }
+                    else
+                    {
+                        throw new Exception("Не вдалося отримати дані про нову посаду");
+                    }
+
+                    OnPropertyChanged(nameof(PositionNames));
+                    Application.Current.MainPage.DisplayAlert("Успіх", "Посаду успішно створено", "OK");
+                }
+                else
+                {
+                    Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося створити посаду", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+            }
+        }
+
+        public async void Remove(string positionName)
+        {
+            var id = GetPositionIdByName(positionName);
+
+            try
+            {
+                bool success = await _http.DeleteAsync($"api/positions/delete/{id}");
+                if (success)
+                {
+                    var pos = _positionDTOs.FirstOrDefault(p => p.Name.Equals(positionName, StringComparison.OrdinalIgnoreCase));
+                    if (pos != null)
+                    {
+                        _positionDTOs.Remove(pos);
+                        PositionNames.Remove(positionName);
+                        OnPropertyChanged(nameof(PositionNames));
+                    }
+                    await Application.Current.MainPage.DisplayAlert("Видалено", "Посаду успішно видалено", "OK");
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося видалити посаду", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
             }
         }
 
