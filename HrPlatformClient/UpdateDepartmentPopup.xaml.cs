@@ -10,7 +10,7 @@ public partial class UpdateDepartmentPopup : Popup
     {
         InitializeComponent();
         NewNameEntry.Text = currentName;
-        CanBeDismissedByTappingOutsideOfPopup = false;
+        CanBeDismissedByTappingOutsideOfPopup = false;  
     }
 
     void OnCancelClicked(object sender, EventArgs e)

@@ -32,8 +32,8 @@
 
 
             <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,30,0,0">
-                <Button Text="Зберегти" Command="{Binding SaveCommand}" BackgroundColor="LimeGreen" />
-                <Button Text="Скасувати" Command="{Binding CancelCommand}" />
+                <Button Text="Зберегти" Command="{Binding SaveCommand}" BackgroundColor="#7ACE7D" Style="{StaticResource Button}"/>
+                <Button Text="Скасувати" Command="{Binding CancelCommand}" Style="{StaticResource CancelButton}"/>
             </HorizontalStackLayout>
 
         </VerticalStackLayout>

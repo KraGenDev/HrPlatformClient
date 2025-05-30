@@ -3,14 +3,17 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    x:Class="HrPlatformClient.UpdatePositionPopup">
+    x:Class="HrPlatformClient.UpdatePositionPopup"
+    Color="Transparent">
 
-    <VerticalStackLayout Padding="20" Spacing="10" BackgroundColor="White">
-        <Label Text="Оновити назву посади" FontSize="18" HorizontalOptions="Center"/>
-        <Entry x:Name="NewNameEntry" Placeholder="Нова назва"/>
-        <HorizontalStackLayout Spacing="10">
-            <Button Text="Скасувати" Clicked="OnCancelClicked" BackgroundColor="Gray"/>
-            <Button Text="Зберегти" Clicked="OnSaveClicked" BackgroundColor="Green" TextColor="White"/>
-        </HorizontalStackLayout>
-    </VerticalStackLayout>
+    <Frame>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label Text="Оновити назву посади" FontSize="18" HorizontalOptions="Center"/>
+            <Entry x:Name="NewNameEntry" Placeholder="Нова назва"/>
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Скасувати" Clicked="OnCancelClicked" Style="{StaticResource CancelButton}"/>
+                <Button Text="Зберегти" Clicked="OnSaveClicked" Style="{StaticResource AddButton}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Frame>
 </toolkit:Popup>

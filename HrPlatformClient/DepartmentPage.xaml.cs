@@ -26,7 +26,7 @@ public partial class DepartmentPage : ContentPage
     {
         if (sender is Button button && button.BindingContext is string currentName)
         {
-            var popup = new UpdatePositionPopup(currentName);
+            var popup = new UpdateDepartmentPopup(currentName);
             var result = await this.ShowPopupAsync(popup);
 
             if (result is string newName && !string.IsNullOrWhiteSpace(newName))

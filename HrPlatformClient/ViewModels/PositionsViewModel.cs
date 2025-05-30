@@ -19,9 +19,10 @@ namespace HrPlatformClient.ViewModels
         public ICommand ToggleAddMode { get; }
 
 
-        public Color AddButtonColor => IsAddingPosition ? Color.FromArgb("#E57373") : Colors.LimeGreen;
+        public Color AddButtonColor => IsAddingPosition ? Color.FromArgb("#374151") : Color.FromArgb("#7ACE7D");
 
         private bool _isAddingPosition;
+
         public bool IsAddingPosition
         {
             get => _isAddingPosition;

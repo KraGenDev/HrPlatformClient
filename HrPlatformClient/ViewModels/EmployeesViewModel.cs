@@ -28,7 +28,7 @@ public class EmployeesViewModel : INotifyPropertyChanged
 
     private bool _searchUsed = false;
     public string SearchToggleButtonText => IsSearchPanelVisible ? "Скасувати" : "Пошук";
-    public Color SearchToggleButtonColor => IsSearchPanelVisible ? Color.FromArgb("#E57373") : Colors.CadetBlue;
+    public Color SearchToggleButtonColor => IsSearchPanelVisible ? Color.FromArgb("#374151") : Color.FromArgb("#5F80C8");
 
     public string FindRequestWords
     {

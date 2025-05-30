@@ -39,7 +39,7 @@ namespace HrPlatformClient.ViewModels
         }
 
         public string AddDepartmentButtonText => IsAddingDepartment ? "Скасувати" : "Додати";
-        public Color AddDepartmentButtonColor => IsAddingDepartment ? Color.FromArgb("#E57373") : Colors.LimeGreen;
+        public Color AddDepartmentButtonColor => IsAddingDepartment ? Color.FromArgb("#374151") : Color.FromArgb("#7ACE7D");
 
         public ICommand ToggleAddDepartmentMode { get; }
 

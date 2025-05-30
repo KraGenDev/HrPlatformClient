@@ -18,12 +18,13 @@
            HorizontalOptions="Start" />
 
             <!-- Кнопка Додати / Скасувати -->
-            <Button Grid.Column="1"
+            <Button  Grid.Column="1"
             Text="{Binding AddButtonText}"
             Command="{Binding ToggleAddMode}"
             VerticalOptions="Center"
             HorizontalOptions="End"
-            BackgroundColor="{Binding AddButtonColor}" />
+            BackgroundColor="{Binding AddButtonColor}"
+            Style="{StaticResource Button}"/>
         </Grid>
 
         <!-- Поле вводу + Зберегти (відображається тільки якщо IsAddingPosition) -->
@@ -37,19 +38,14 @@
            HorizontalOptions="FillAndExpand" />
 
             <Button Text="Зберегти"
-            Command="{Binding CreatePosition}"
-            BackgroundColor="LimeGreen" 
-            TextColor="White" />
+                Command="{Binding CreatePosition}"
+                Style="{StaticResource AddButton}"/>
         </StackLayout>
 
         <CollectionView ItemsSource="{Binding Positions}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,0,0,10"
-                           Padding="8"
-                           BackgroundColor="DarkGray"
-                           CornerRadius="6"
-                           HasShadow="True">
+                    <Frame Margin="0,0,0,10">
                         <Grid ColumnDefinitions="*,Auto,Auto"
                               VerticalOptions="Center"
                               RowDefinitions="Auto"
@@ -60,22 +56,20 @@
                             <Button Grid.Column="1"
                                     Text="Оновити"
                                     Clicked="OnUpdateClicked"
-                                    BackgroundColor="CadetBlue"
-                                    TextColor="White"
                                     VerticalOptions="Center"
                                     Margin="10,0,0,0"
-                                    Padding="8,4"/>
+                                    Padding="8,4"
+                                    Style="{StaticResource RefreshButton}"/>
 
 
                             <Button Grid.Column="2"
                                     Text="Видалити"
                                     Command="{Binding BindingContext.DeletePosition, Source={x:Reference RootPage}}"
                                     CommandParameter="{Binding}"
-                                    BackgroundColor="#E57373"
-                                    TextColor="White"
                                     VerticalOptions="Center"
                                     Margin="10,0,0,0"
-                                    Padding="8,4"/>
+                                    Padding="8,4"
+                                    Style="{StaticResource DeleteButton}"/>
                         </Grid>
                     </Frame>
                 </DataTemplate>

@@ -12,6 +12,7 @@
     <!-- Темніший синій -->
     <Color x:Key="PrimaryDarkText">#212121</Color>
     <!-- Темний текст -->
+
     <Color x:Key="Secondary">#26A69A</Color>
     <!-- Бірюзовий -->
     <Color x:Key="SecondaryDarkText">#004D40</Color>
@@ -24,7 +25,7 @@
     <Color x:Key="Magenta">#388E3C</Color>
     <!-- Зелений акцент -->
     <Color x:Key="MidnightBlue">#190649</Color>
-    <!-- Можна залишити як акцент -->
+    <!-- Акцент -->
     <Color x:Key="OffBlack">#1f1f1f</Color>
 
     <Color x:Key="Gray100">#F5F5F5</Color>
@@ -50,4 +51,36 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+
+    <!-- Додані кольори із нового файлу -->
+
+    <!-- Головні сірі -->
+    <Color x:Key="Gray50">#F9FAFB</Color>
+    <Color x:Key="Gray700">#374151</Color>
+    <Color x:Key="Gray800">#1F2937</Color>
+
+    <!-- Темні основні -->
+    <Color x:Key="DarkBackground">#121212</Color>
+    <Color x:Key="DarkSurface">#1E1E1E</Color>
+    <Color x:Key="DarkPrimaryText">#E0E0E0</Color>
+    <Color x:Key="DarkSecondaryText">#A0A0A0</Color>
+
+    <!-- Світлі основні -->
+    <Color x:Key="LightBackground">#FFFFFF</Color>
+    <Color x:Key="LightSurface">#F5F5F5</Color>
+    <Color x:Key="LightPrimaryText">#111827</Color>
+    <Color x:Key="LightSecondaryText">#4B5563</Color>
+
+    <!-- Акцентні -->
+    <Color x:Key="PrimaryLight">#93C5FD</Color>
+
+    <Color x:Key="Success">#7ACE7D</Color>
+    <Color x:Key="SuccessDark">#609F51</Color>
+    <Color x:Key="Red">#E2674B</Color>
+    <Color x:Key="RedDark">#CC4235</Color>
+    <Color x:Key="Search">#7BB2E0</Color>
+    <Color x:Key="SearchDark">#5F80C8</Color>
+    <Color x:Key="Refresh">#FFC107</Color>
+    <Color x:Key="RefreshDark">#DBAA09</Color>
+    <Color x:Key="SearchToggleButtonColor">#5F9EA0</Color>
 </ResourceDictionary>

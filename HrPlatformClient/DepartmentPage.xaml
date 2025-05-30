@@ -5,7 +5,6 @@
              x:Name="RootPage">
     <VerticalStackLayout Padding="20" Spacing="15">
 
-        <!-- Заголовок + кнопка -->
         <Grid ColumnDefinitions="*,Auto"
               VerticalOptions="Center"
               Padding="0,10,0,0"
@@ -22,10 +21,9 @@
                     VerticalOptions="Center"
                     HorizontalOptions="End"
                     BackgroundColor="{Binding AddDepartmentButtonColor}"
-                    TextColor="White" />
+                    Style="{StaticResource Button}" />
         </Grid>
 
-        <!-- Поле вводу + Зберегти -->
         <StackLayout IsVisible="{Binding IsAddingDepartment}"
                      Orientation="Horizontal"
                      HorizontalOptions="FillAndExpand"
@@ -36,49 +34,42 @@
 
             <Button Text="Зберегти"
                     Command="{Binding CreateDepartment}"
-                    BackgroundColor="LimeGreen"
-                    TextColor="White" />
+                    Style="{StaticResource AddButton}"/>
         </StackLayout>
 
-        <!-- Список відділів -->
         <CollectionView ItemsSource="{Binding Departments}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Margin="0,0,0,10"
-               Padding="8"
-               BackgroundColor="DarkGray"
-               CornerRadius="6"
-               HasShadow="True">
-            <Grid ColumnDefinitions="*,Auto,Auto"
-                  VerticalOptions="Center"
-                  RowDefinitions="Auto"
-                  Padding="0">
+                           Padding="8"
+                           CornerRadius="6"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="*,Auto,Auto"
+                              VerticalOptions="Center"
+                              RowDefinitions="Auto"
+                              Padding="0">
 
-                <Label Text="{Binding}" VerticalOptions="Center" Grid.Column="0" />
+                            <Label Text="{Binding}" VerticalOptions="Center" Grid.Column="0" />
 
-                    <Button Grid.Column="1"
-                        Text="Оновити"
-                        Clicked="OnUpdateClicked"
-                        BackgroundColor="CadetBlue"
-                        TextColor="White"
-                        VerticalOptions="Center"
-                        Margin="10,0,0,0"
-                        Padding="8,4"/>
-
-
-                    <Button Grid.Column="2"
-                        Text="Видалити"
-                        Command="{Binding BindingContext.DeleteDepartment, Source={x:Reference RootPage}}"
-                        CommandParameter="{Binding}"
-                        BackgroundColor="#E57373"
-                        TextColor="White"
-                        VerticalOptions="Center"
-                        Padding="8,4" />
+                            <Button Grid.Column="1"
+                                    Text="Оновити"
+                                    Clicked="OnUpdateClicked"
+                                    VerticalOptions="Center"
+                                    Margin="10,0,0,0"
+                                    Padding="8,4"
+                                    Style="{StaticResource RefreshButton}"/>
+                            <Button Grid.Column="2"
+                                    Text="Видалити"
+                                    Command="{Binding BindingContext.DeleteDepartment, Source={x:Reference RootPage}}"
+                                    CommandParameter="{Binding}"
+                                    VerticalOptions="Center"
+                                    Margin="10,0,0,0"
+                                    Padding="8,4"
+                                    Style="{StaticResource DeleteButton}" />
                         </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
 
     </VerticalStackLayout>

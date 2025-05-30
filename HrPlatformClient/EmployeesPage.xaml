@@ -21,7 +21,8 @@
             Command="{Binding ToggleAddMode}"
             VerticalOptions="Center"
             HorizontalOptions="End"
-            BackgroundColor="{Binding SearchToggleButtonColor}" 
+            BackgroundColor="{Binding SearchToggleButtonColor}"
+            Style="{StaticResource Button}" 
             Margin="0,0,10,0"/>
 
             <!-- Кнопка додати -->
@@ -30,8 +31,8 @@
             Command="{Binding CreateEmployeeCommand}"
             VerticalOptions="Center"
             HorizontalOptions="End"
-            BackgroundColor="LimeGreen"
-            TextColor="White" />
+            Style="{StaticResource AddButton}" 
+            />
         </Grid>
 
         <!-- Меню пошуку -->
@@ -47,14 +48,13 @@
 
             <Button Text="Знайти"
             Command="{Binding FindEmployeeCommand}"
-            BackgroundColor="DodgerBlue"
-            TextColor="White" />
+            Style="{StaticResource SearchButton}" />
         </StackLayout>
 
         <CollectionView ItemsSource="{Binding Employees}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,0,0,10" Padding="10" BackgroundColor="DarkGrey" CornerRadius="6" HasShadow="True">
+                    <Frame Margin="0,0,0,10" Padding="10" CornerRadius="6" HasShadow="True">
                         <VerticalStackLayout Spacing="6">
                             <HorizontalStackLayout Spacing="4">
                                 <Label Text="Ім’я:" FontAttributes="Bold" />
@@ -84,12 +84,10 @@
                             <HorizontalStackLayout Spacing="15" HorizontalOptions="End">
                                 <Button Text="Редагувати" 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type local:EmployeesPage}}, Path=BindingContext.EditEmployeeCommand}"
-                                        CommandParameter="{Binding .}" />
+                                        CommandParameter="{Binding .}" Style="{StaticResource RefreshButton}"  />
                                 <Button Text="Видалити"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type local:EmployeesPage}}, Path=BindingContext.DeleteEmployeeCommand}"
-                                        CommandParameter="{Binding .}" 
-                                        BackgroundColor="#E57373"
-                                        TextColor="White"/>
+                                        CommandParameter="{Binding .}"  Style="{StaticResource DeleteButton}" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Frame>
