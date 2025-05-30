@@ -1,4 +1,5 @@
-using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Maui.Views; // <-- дуже важливо!
+using System;
 
 namespace HrPlatformClient
 {
@@ -10,7 +11,7 @@ namespace HrPlatformClient
         {
             InitializeComponent();
             NewNameEntry.Text = currentName;
-            CanBeDismissedByTappingOutsideOfPopup = false;
+            CanBeDismissedByTappingOutsideOfPopup = false; 
         }
 
         void OnCancelClicked(object sender, EventArgs e)

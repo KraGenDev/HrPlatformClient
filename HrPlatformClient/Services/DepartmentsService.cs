@@ -86,6 +86,66 @@ namespace HrPlatformClient.Services
             }
         }
 
+        public async Task<bool> UpdateDepartmentAsync(string name, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Назва відділу не може бути порожньою", "OK");
+                return false;
+            }
+
+            var id = GetDepartmentIdByName(name);
+
+            if (id == -1)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Відділ не знайдена", "OK");
+                return false;
+            }
+
+            if (DepartmentNames.Contains(newName, StringComparer.OrdinalIgnoreCase) && !newName.Equals(name, StringComparison.OrdinalIgnoreCase))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Відділ з такою назвою вже існує", "OK");
+                return false;
+            }
+
+            try
+            {
+                var updateObj = new { name = newName };
+
+                var updatedDepartment = await _http.PutAsync<object, DepartmentDTO>($"api/departments/update/{id}", updateObj);
+
+                if (updatedDepartment != null)
+                {
+                    var pos = _departmentsDTOs.FirstOrDefault(p => p.Id == id);
+                    if (pos != null)
+                    {
+                        pos.Name = updatedDepartment.Name;
+
+                        int index = DepartmentNames.IndexOf(name);
+                        if (index >= 0)
+                        {
+                            DepartmentNames[index] = updatedDepartment.Name;
+                        }
+                        OnPropertyChanged(nameof(DepartmentNames));
+                    }
+
+                    await Application.Current.MainPage.DisplayAlert("Успіх", "Відділ успішно оновлено", "OK");
+                    return true;
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося оновити відділ", "OK");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+                return false;
+            }
+        }
+
+
         public async void Remove(string departmentName)
         {
             var id = GetDepartmentIdByName(departmentName);

@@ -61,6 +61,18 @@ namespace HrPlatformClient.ViewModels
             NewDepartmentName = string.Empty;
         }
 
+        public async Task UpdateDepartmentAsync(string currentName, string newName)
+        {
+            try
+            {
+                await _departmentService.UpdateDepartmentAsync(currentName, newName);
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+            }
+        }
+
         private async void OnCreateDepartment()
         {
             if (string.IsNullOrWhiteSpace(NewDepartmentName))
