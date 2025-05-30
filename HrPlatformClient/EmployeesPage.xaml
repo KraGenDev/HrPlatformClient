@@ -21,7 +21,8 @@
             Command="{Binding ToggleAddMode}"
             VerticalOptions="Center"
             HorizontalOptions="End"
-            BackgroundColor="{Binding SearchToggleButtonColor}" />
+            BackgroundColor="{Binding SearchToggleButtonColor}" 
+            Margin="0,0,10,0"/>
 
             <!-- Кнопка додати -->
             <Button Grid.Column="2"

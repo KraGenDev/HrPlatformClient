@@ -116,6 +116,65 @@ namespace HrPlatformClient.Services
             }
         }
 
+        public async Task<bool> UpdatePositionAsync(string name, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Назва посади не може бути порожньою", "OK");
+                return false;
+            }
+
+            var id = GetPositionIdByName(name);
+
+            if (id == -1)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Посада не знайдена", "OK");
+                return false;
+            }
+
+            if (PositionNames.Contains(newName, StringComparer.OrdinalIgnoreCase) && !newName.Equals(name, StringComparison.OrdinalIgnoreCase))
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", "Посада з такою назвою вже існує", "OK");
+                return false;
+            }
+
+            try
+            {
+                var updateObj = new { name = newName };
+
+                var updatedPosition = await _http.PutAsync<object, PositionDTO>($"api/positions/update/{id}", updateObj);
+
+                if (updatedPosition != null)
+                {
+                    var pos = _positionDTOs.FirstOrDefault(p => p.Id == id);
+                    if (pos != null)
+                    {
+                        pos.Name = updatedPosition.Name;
+
+                        int index = PositionNames.IndexOf(name);
+                        if (index >= 0)
+                        {
+                            PositionNames[index] = updatedPosition.Name;
+                        }
+                        OnPropertyChanged(nameof(PositionNames));
+                    }
+
+                    await Application.Current.MainPage.DisplayAlert("Успіх", "Посаду успішно оновлено", "OK");
+                    return true;
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Помилка", "Не вдалося оновити посаду", "OK");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+                return false;
+            }
+        }
+
         private async Task LoadPositionsAsync()
         {
             _positionDTOs.Clear();

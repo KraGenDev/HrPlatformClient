@@ -59,13 +59,13 @@
 
                             <Button Grid.Column="1"
                                     Text="Оновити"
-                                    Command="{Binding BindingContext.DeletePosition, Source={x:Reference RootPage}}"
-                                    CommandParameter="{Binding}"
+                                    Clicked="OnUpdateClicked"
                                     BackgroundColor="CadetBlue"
                                     TextColor="White"
                                     VerticalOptions="Center"
                                     Margin="10,0,0,0"
                                     Padding="8,4"/>
+
 
                             <Button Grid.Column="2"
                                     Text="Видалити"

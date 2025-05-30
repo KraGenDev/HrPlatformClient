@@ -86,6 +86,19 @@ namespace HrPlatformClient.ViewModels
             _positionsService.Remove(name);
         }
 
+        public async Task UpdatePositionAsync(string oldName, string newName)
+        {
+            try
+            {
+                await _positionsService.UpdatePositionAsync(oldName, newName);
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Помилка 1", ex.Message, "OK");
+            }
+        }
+
+
         public async Task InitAsync() => await _positionsService.InitAsync();
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
