@@ -9,11 +9,45 @@ public class EmployeesViewModel : INotifyPropertyChanged
 {
     private readonly HttpRequestsController _http;
 
+    private string _findRequestWords;
+
     public ObservableCollection<Employee> Employees { get; } = [];
 
+    private bool _isSearchPanelVisible;
+    public bool IsSearchPanelVisible
+    {
+        get => _isSearchPanelVisible;
+        set
+        {
+            _isSearchPanelVisible = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SearchToggleButtonText));
+            OnPropertyChanged(nameof(SearchToggleButtonColor));
+        }
+    }
+
+    private bool _searchUsed = false;
+    public string SearchToggleButtonText => IsSearchPanelVisible ? "Скасувати" : "Пошук";
+    public Color SearchToggleButtonColor => IsSearchPanelVisible ? Color.FromArgb("#E57373") : Colors.CadetBlue;
+
+    public string FindRequestWords
+    {
+        get => _findRequestWords;
+        set
+        {
+            _findRequestWords = value;
+            OnPropertyChanged();
+        }
+    }
     public ICommand EditEmployeeCommand { get; }
     public ICommand CreateEmployeeCommand { get; }
     public ICommand DeleteEmployeeCommand { get; }
+    public ICommand FindEmployeeCommand { get; }
+    public ICommand ToggleAddMode { get; }
+
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
 
     public EmployeesViewModel(HttpRequestsController http)
     {
@@ -22,7 +56,50 @@ public class EmployeesViewModel : INotifyPropertyChanged
         EditEmployeeCommand = new Command<Employee>(OnEditEmployee);
         DeleteEmployeeCommand = new Command<Employee>(OnDeleteEmployee);
         CreateEmployeeCommand = new Command(OnCreateEmployee);
+        FindEmployeeCommand = new Command(async () => await OnFindEmployee());
 
+        ToggleAddMode = new Command(async () =>
+        {
+            IsSearchPanelVisible = !IsSearchPanelVisible;
+            FindRequestWords = string.Empty;
+
+            if (!IsSearchPanelVisible && _searchUsed)
+            {
+                _searchUsed = false;
+                await LoadEmployeesAsync();
+            }
+        });
+
+
+        FindRequestWords = string.Empty;
+    }
+
+    private async Task OnFindEmployee()
+    {
+        if (string.IsNullOrWhiteSpace(FindRequestWords))
+        {
+            await Application.Current.MainPage.DisplayAlert("Помилка", "Будь ласка, введіть пошуковий запит", "OK");
+            return;
+        }
+
+        try
+        {
+            var employees = await _http.GetAsync<List<Employee>>($"api/employees/search?keyword={Uri.EscapeDataString(FindRequestWords)}");
+            Employees.Clear();
+            if (employees != null)
+            {
+                foreach (Employee emp in employees)
+                {
+                    Employees.Add(emp);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Помилка", ex.Message, "OK");
+        }
+
+        _searchUsed = true;
     }
 
     private async void OnCreateEmployee()
@@ -91,7 +168,6 @@ public class EmployeesViewModel : INotifyPropertyChanged
         }
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

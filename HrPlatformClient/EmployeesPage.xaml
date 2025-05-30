@@ -4,22 +4,51 @@
              x:Class="HrPlatformClient.EmployeesPage">
 
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Grid ColumnDefinitions="*,Auto" Padding="0,10,0,0">
-            <!-- Ліва колонка -->
+        <Grid ColumnDefinitions="*,Auto,Auto"
+      VerticalOptions="Center"
+      Padding="0,10,0,0"
+      RowDefinitions="Auto">
+            <!-- Заголовок -->
             <Label Grid.Column="0"
            Text="Список працівників"
            FontSize="24"
            VerticalOptions="Center"
            HorizontalOptions="Start" />
 
-            <!-- Права колонка -->
+            <!-- Кнопка пошуку -->
             <Button Grid.Column="1"
+            Text="{Binding SearchToggleButtonText}"
+            Command="{Binding ToggleAddMode}"
+            VerticalOptions="Center"
+            HorizontalOptions="End"
+            BackgroundColor="{Binding SearchToggleButtonColor}" />
+
+            <!-- Кнопка додати -->
+            <Button Grid.Column="2"
             Text="Додати"
             Command="{Binding CreateEmployeeCommand}"
             VerticalOptions="Center"
-            HorizontalOptions="End" 
-            BackgroundColor="LimeGreen"/>
+            HorizontalOptions="End"
+            BackgroundColor="LimeGreen"
+            TextColor="White" />
         </Grid>
+
+        <!-- Меню пошуку -->
+        <StackLayout IsVisible="{Binding IsSearchPanelVisible}"
+             Orientation="Horizontal"
+             Spacing="10"
+             Margin="0,0,0,10"
+             HorizontalOptions="FillAndExpand">
+
+            <Entry Text="{Binding FindRequestWords}"
+           Placeholder="Введіть ім’я, email або посаду"
+           HorizontalOptions="FillAndExpand" />
+
+            <Button Text="Знайти"
+            Command="{Binding FindEmployeeCommand}"
+            BackgroundColor="DodgerBlue"
+            TextColor="White" />
+        </StackLayout>
 
         <CollectionView ItemsSource="{Binding Employees}">
             <CollectionView.ItemTemplate>
